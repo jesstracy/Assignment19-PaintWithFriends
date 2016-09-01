@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -25,6 +26,12 @@ public class Main extends Application {
 
     final double DEFAULT_SCENE_WIDTH = 800;
     final double DEFAULT_SCENE_HEIGHT = 600;
+    boolean keepDrawing = true;
+    int strokeSize = 10;
+//    Stroke myStroke;
+
+    GraphicsContext secondGC;
+
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -44,7 +51,7 @@ public class Main extends Application {
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         grid.add(sceneTitle, 0, 0);
 
-        Button button = new Button("Sample paint button");
+        Button button = new Button("Open second stage");
         HBox hbButton = new HBox(10);
         hbButton.setAlignment(Pos.TOP_LEFT);
         hbButton.getChildren().add(button);
@@ -73,17 +80,41 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
 //                System.out.println("x: " + e.getX() + ", y: " + e.getY());
-                gc.strokeOval(e.getX(), e.getY(), 10, 10);
-//                addStroke(e.getX(), e.getY(), 10);
+                if (keepDrawing) {
+                    gc.strokeOval(e.getX(), e.getY(), strokeSize, strokeSize);
+                    addStroke(e.getX(), e.getY(), strokeSize);
+                }
             }
         });
 
-        canvas.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        grid.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
             @Override
             public void handle(KeyEvent e) {
                 System.out.println(e.getCode());
                 System.out.println(e.getText());
+
+                if (e.getText().equalsIgnoreCase("D")) {
+                    System.out.println("Toggle drawing!");
+                    keepDrawing = !keepDrawing;
+                }
+
+                if (e.getCode() == KeyCode.UP) {
+                    strokeSize++;
+                    int maxStrokeSize = 60;
+                    if (strokeSize > maxStrokeSize) {
+                        System.out.println("sample.Stroke size can't increase past " + maxStrokeSize + "!");
+                        strokeSize = maxStrokeSize;
+                    }
+                }
+
+                if (e.getCode() == KeyCode.DOWN) {
+                    strokeSize--;
+                    if (strokeSize < 1) {
+                        System.out.println("sample.Stroke size must be at least 1!");
+                        strokeSize = 1;
+                    }
+                }
             }
         });
 
@@ -95,14 +126,18 @@ public class Main extends Application {
         // set our grid layout on the scene
         Scene defaultScene = new Scene(grid, DEFAULT_SCENE_WIDTH, DEFAULT_SCENE_HEIGHT);
 
-
         primaryStage.setScene(defaultScene);
         primaryStage.show();
     }
 
+    public void addStroke(double xCoordinate, double yCoordinate, int strokeSize) {
+//        myStroke = new Stroke(xCoordinate, yCoordinate, strokeSize);
+        secondGC.strokeOval(xCoordinate, yCoordinate, strokeSize, strokeSize);
+    }
+
     public void startSecondStage() {
         Stage secondaryStage = new Stage();
-        secondaryStage.setTitle("Welcome to JavaFX");
+        secondaryStage.setTitle("Second Stage");
 
         // we're using a grid layout
         GridPane grid = new GridPane();
@@ -110,7 +145,7 @@ public class Main extends Application {
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
-        grid.setGridLinesVisible(false);
+        grid.setGridLinesVisible(true);
 //        grid.setPrefSize(primaryStage.getMaxWidth(), primaryStage.getMaxHeight());
 
         // add buttons and canvas to the grid
@@ -131,11 +166,32 @@ public class Main extends Application {
             }
         });
 
+
+
         // add canvas
         Canvas canvas = new Canvas(DEFAULT_SCENE_WIDTH, DEFAULT_SCENE_HEIGHT-100);
 
+        //Make graphics thing here??
+//        GraphicsContext secondGC = canvas.getGraphicsContext2D();
+//        secondGC.setFill(Color.GREEN);
+//        secondGC.setStroke(Color.BLUE);
+//        secondGC.setStroke(Color.color(Math.random(), Math.random(), Math.random()));
+//        secondGC.setLineWidth(5);
+
+        secondGC = canvas.getGraphicsContext2D();
+        secondGC.setFill(Color.GREEN);
+        secondGC.setStroke(Color.BLUE);
+        secondGC.setStroke(Color.color(Math.random(), Math.random(), Math.random()));
+        secondGC.setLineWidth(5);
+
+
+
+
+        grid.add(canvas, 0 ,2);
+
         // set our grid layout on the scene
         Scene defaultScene = new Scene(grid, DEFAULT_SCENE_WIDTH, DEFAULT_SCENE_HEIGHT);
+
 
         secondaryStage.setScene(defaultScene);
         System.out.println("About to show the second stage");

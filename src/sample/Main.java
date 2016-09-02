@@ -22,6 +22,10 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
 public class Main extends Application {
 
     final double DEFAULT_SCENE_WIDTH = 800;
@@ -82,7 +86,9 @@ public class Main extends Application {
 //                System.out.println("x: " + e.getX() + ", y: " + e.getY());
                 if (keepDrawing) {
                     gc.strokeOval(e.getX(), e.getY(), strokeSize, strokeSize);
-                    addStroke(e.getX(), e.getY(), strokeSize);
+                    if (secondGC != null) {
+                        addStroke(e.getX(), e.getY(), strokeSize);
+                    }
                 }
             }
         });
@@ -186,7 +192,6 @@ public class Main extends Application {
 
 
 
-
         grid.add(canvas, 0 ,2);
 
         // set our grid layout on the scene
@@ -198,7 +203,6 @@ public class Main extends Application {
 
         secondaryStage.show();
     }
-
 
 
 

@@ -29,6 +29,9 @@ public class Client {
             String serializedTestStroke = myMain.jsonSerialize(testStroke);
             out.println(serializedTestStroke);
 
+            //read in server's return method
+            String serverResponse = in.readLine();
+            System.out.println("Server replied: " + serverResponse);
             // now test if I can serialize a stroke that is not already an object (using addStroke method) and send it to
             // the server.
             // NO because doesn't return anything for me to send. Would have to modify it to also return a string OR make
@@ -36,6 +39,7 @@ public class Client {
 
             // now test if I can deserialize it on the server side!!
             // done
+
 
 
 

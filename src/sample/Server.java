@@ -26,7 +26,7 @@ public class Server {
             System.out.println("Incoming connection from " + clientSocket.getInetAddress().getHostAddress());
 
             BufferedReader inputFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter outputToClient = new PrintWriter(clientSocket.getOutputStream());
+            PrintWriter outputToClient = new PrintWriter(clientSocket.getOutputStream(), true);
 
             String clientMessage = inputFromClient.readLine();
             System.out.println("Stroke received from client: " + clientMessage);
@@ -36,8 +36,8 @@ public class Server {
             Stroke myStrokeFromClient = myMain.jsonDeserializeStroke(clientMessage);
             System.out.println("Serialized stroke received from client: " + myStrokeFromClient);
 
-//            outputToClient.println("Received your stroke! " + myStrokeFromClient);
-
+            outputToClient.println("Received your stroke! " + myStrokeFromClient.toString());
+            
         } catch(IOException exception) {
             exception.printStackTrace();
         }

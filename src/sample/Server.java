@@ -1,8 +1,6 @@
 package sample;
 
-import javafx.application.Application;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,11 +8,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * Created by jessicatracy on 9/1/16.
  */
-public class MyServer {
+public class Server {
     GraphicsContext serverGC;
 
     public void startServer() {
@@ -35,7 +34,9 @@ public class MyServer {
             // test if I can deserialize my jsonString from client into a stroke object
             // (method in main)
             Stroke myStrokeFromClient = myMain.jsonDeserializeStroke(clientMessage);
-            System.out.println(myStrokeFromClient);
+            System.out.println("Serialized stroke received from client: " + myStrokeFromClient);
+
+//            outputToClient.println("Received your stroke! " + myStrokeFromClient);
 
         } catch(IOException exception) {
             exception.printStackTrace();
@@ -43,7 +44,7 @@ public class MyServer {
     }
 
     public static void main(String[] args) {
-        MyServer myServer = new MyServer();
+        Server myServer = new Server();
         myServer.startServer();
 
 //        Main myMain = new Main();

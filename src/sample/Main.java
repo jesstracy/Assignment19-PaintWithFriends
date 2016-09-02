@@ -37,6 +37,7 @@ public class Main extends Application {
 //    Stroke myStroke;
 
     GraphicsContext secondGC;
+    Client myClient;
 
 
     @Override
@@ -72,6 +73,18 @@ public class Main extends Application {
                 // How do I get the server class to open the new window??????
 //                startSecondStage(secondGC);
                 startSecondStage();
+            }
+        });
+
+        Button openClientSocketButton = new Button("Show your strokes to a friend!");
+        hbButton.getChildren().add(openClientSocketButton);
+
+        openClientSocketButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Now opening client socket...");
+                myClient = new Client();
+                myClient.startClientSocket();
             }
         });
 

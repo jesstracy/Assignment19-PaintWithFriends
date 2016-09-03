@@ -1,6 +1,5 @@
 package sample;
 
-import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.*;
@@ -31,7 +30,8 @@ public class Client {
 
     public void startClientSocket() {
         try {
-            clientSocket = new Socket("localhost", 8005);
+//            clientSocket = new Socket("localhost", 8005);
+            clientSocket = new Socket("192.168.1.207", 8005);
             System.out.println("\tClient socket connected");
 
             out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -101,7 +101,7 @@ public class Client {
 //            clientSocket.close();
 
         } catch (IOException exception) {
-            System.out.println("\tException caught when reading in from server OR when trying to close.");
+            System.out.println("\tException caught when reading in from server.");
             exception.printStackTrace();
         }
     }

@@ -18,6 +18,14 @@ public class Stroke {
         this.strokeSize = strokeSize;
     }
 
+    @Override
+    public String toString() {
+        return "Stroke info: " +
+                "xCoordinate=" + xCoordinate + ", " +
+                "yCoordinate=" + yCoordinate + ", " +
+                "strokeSize=" + strokeSize;
+    }
+
     // getters and setters
     public double getxCoordinate() {
         return xCoordinate;

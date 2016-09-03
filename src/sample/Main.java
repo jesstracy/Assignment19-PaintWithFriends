@@ -27,21 +27,34 @@ import jodd.json.JsonSerializer;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Main extends Application {
 
     final double DEFAULT_SCENE_WIDTH = 800;
     final double DEFAULT_SCENE_HEIGHT = 600;
     boolean keepDrawing = true;
+    boolean isClientRunning = false;
     int strokeSize = 10;
 //    Stroke myStroke;
 
     GraphicsContext secondGC;
-    Client myClient;
+    Client myClient = new Client();
 
+
+//    private ArrayList<Stroke> strokeListMain = new ArrayList<Stroke>();
+
+//    public ArrayList<Stroke> getStrokeListMain() {
+//        return strokeListMain;
+//    }
+
+//    public void setStrokeListMain(ArrayList<Stroke> strokeListMain) {
+//        this.strokeListMain = strokeListMain;
+//    }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        Main myMain = new Main();
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Hello World");
 
@@ -83,8 +96,9 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Now opening client socket...");
-                myClient = new Client();
-                myClient.startClientSocket();
+//                myClient = new Client();
+                isClientRunning = true;
+                myClient.startClientSocket(myMain);
             }
         });
 
@@ -104,8 +118,26 @@ public class Main extends Application {
 //                System.out.println("x: " + e.getX() + ", y: " + e.getY());
                 if (keepDrawing) {
                     gc.strokeOval(e.getX(), e.getY(), strokeSize, strokeSize);
+                    // To avoid error messages before second screen is open
                     if (secondGC != null) {
-                        addStroke(e.getX(), e.getY(), strokeSize);
+                        // draw on second screen
+                        secondGC.strokeOval(e.getX(), e.getY(), strokeSize, strokeSize);
+                    }
+                    // only add stroke to client's strokeList if the client is running!
+                    if (isClientRunning) {
+                        // for testing
+                        System.out.println("In main - creating testing stroke");
+                        Stroke testingStrokeMain = new Stroke(e.getX(), e.getY(), strokeSize);
+                        System.out.println("Stroke I'm about to set to client: " + testingStrokeMain);
+                        System.out.println("Setting to client.");
+                        myClient.setTestingStroke(testingStrokeMain);
+
+//                        System.out.println("Now adding strokes to arraylist in client...");
+//                        addStroke(e.getX(), e.getY(), strokeSize);
+                        System.out.println("Now calling sendStrokesToServer...");
+                        myClient.sendStrokesToServer(myMain);
+
+
                     }
                 }
             }
@@ -163,12 +195,15 @@ public class Main extends Application {
     public void addStroke(double xCoordinate, double yCoordinate, int strokeSize) {
         // make a new stroke object
         Stroke myStroke = new Stroke(xCoordinate, yCoordinate, strokeSize);
+        // add it to client arrayList strokeList
+        myClient.addStrokeToArrayList(myStroke);
+//        myClient.strokeList.add(myStroke);     <--- didn't work either setting to private
 
         // serialize the stroke to send to the server.
 //        String jsonStrokeString = jsonSerialize(myStroke);
 
         //make the second graphics context draw out the same thing.
-        secondGC.strokeOval(xCoordinate, yCoordinate, strokeSize, strokeSize);
+//        secondGC.strokeOval(xCoordinate, yCoordinate, strokeSize, strokeSize);
     }
 
     public String jsonSerialize(Stroke myStroke) {
@@ -245,70 +280,6 @@ public class Main extends Application {
 
         secondaryStage.show();
     }
-
-    // Parameters version for server class to use
-//    public void startSecondStage(GraphicsContext secondGC) {
-//        Stage secondaryStage = new Stage();
-//        secondaryStage.setTitle("Second Stage");
-//
-//        // we're using a grid layout
-//        GridPane grid = new GridPane();
-//        grid.setAlignment(Pos.CENTER);
-//        grid.setHgap(10);
-//        grid.setVgap(10);
-//        grid.setPadding(new Insets(25, 25, 25, 25));
-//        grid.setGridLinesVisible(true);
-////        grid.setPrefSize(primaryStage.getMaxWidth(), primaryStage.getMaxHeight());
-//
-//        // add buttons and canvas to the grid
-//        Text sceneTitle = new Text("Welcome to Paint application");
-//        sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-//        grid.add(sceneTitle, 0, 0);
-//
-//        Button button = new Button("Sample paint button");
-//        HBox hbButton = new HBox(10);
-//        hbButton.setAlignment(Pos.TOP_LEFT);
-//        hbButton.getChildren().add(button);
-//        grid.add(hbButton, 0, 1);
-//
-//        button.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent e) {
-//                System.out.println("I can switch to another scene here ...");
-//            }
-//        });
-//
-//
-//
-//        // add canvas
-//        Canvas canvas = new Canvas(DEFAULT_SCENE_WIDTH, DEFAULT_SCENE_HEIGHT-100);
-//
-//        //Make graphics thing here??
-////        GraphicsContext secondGC = canvas.getGraphicsContext2D();
-////        secondGC.setFill(Color.GREEN);
-////        secondGC.setStroke(Color.BLUE);
-////        secondGC.setStroke(Color.color(Math.random(), Math.random(), Math.random()));
-////        secondGC.setLineWidth(5);
-//
-//        secondGC = canvas.getGraphicsContext2D();
-//        secondGC.setFill(Color.GREEN);
-//        secondGC.setStroke(Color.BLUE);
-//        secondGC.setStroke(Color.color(Math.random(), Math.random(), Math.random()));
-//        secondGC.setLineWidth(5);
-//
-//
-//
-//        grid.add(canvas, 0 ,2);
-//
-//        // set our grid layout on the scene
-//        Scene defaultScene = new Scene(grid, DEFAULT_SCENE_WIDTH, DEFAULT_SCENE_HEIGHT);
-//
-//
-//        secondaryStage.setScene(defaultScene);
-//        System.out.println("About to show the second stage");
-//
-//        secondaryStage.show();
-//    }
 
 
     public static void main(String[] args) {

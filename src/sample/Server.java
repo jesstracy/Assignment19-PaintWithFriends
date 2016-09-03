@@ -29,15 +29,17 @@ public class Server {
             PrintWriter outputToClient = new PrintWriter(clientSocket.getOutputStream(), true);
 
             String clientMessage = inputFromClient.readLine();
-            System.out.println("Stroke received from client: " + clientMessage);
+            System.out.println("Stroke json string received from client: " + clientMessage);
 
             // test if I can deserialize my jsonString from client into a stroke object
             // (method in main)
-            Stroke myStrokeFromClient = myMain.jsonDeserializeStroke(clientMessage);
-            System.out.println("Serialized stroke received from client: " + myStrokeFromClient);
+            // (put this back on when serializing the input)
+//            Stroke myStrokeFromClient = myMain.jsonDeserializeStroke(clientMessage);
+//            System.out.println("Deserialized stroke received from client: " + myStrokeFromClient);
 
-            outputToClient.println("Received your stroke! " + myStrokeFromClient.toString());
-            
+//            outputToClient.println("Received your stroke! " + myStrokeFromClient);
+            outputToClient.println("Received your stroke! " + clientMessage);
+
         } catch(IOException exception) {
             exception.printStackTrace();
         }

@@ -28,22 +28,19 @@ public class Server {
             BufferedReader inputFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             PrintWriter outputToClient = new PrintWriter(clientSocket.getOutputStream(), true);
 
-            String clientMessage = inputFromClient.readLine();
-            System.out.println("Stroke json string received from client: " + clientMessage);
+//            String clientMessage = inputFromClient.readLine();
+            String clientMessage;
+            while((clientMessage = inputFromClient.readLine()) != null) {
+                System.out.println("Stroke json string received from client: " + clientMessage);
 
-            // test if I can deserialize my jsonString from client into a stroke object
-            // (method in main)
-            // (put this back on when serializing the input)
-//            Stroke myStrokeFromClient = myMain.jsonDeserializeStroke(clientMessage);
-//            System.out.println("Deserialized stroke received from client: " + myStrokeFromClient);
 
-//            outputToClient.println("Received your stroke! " + myStrokeFromClient);
-            outputToClient.println("Received your stroke! " + clientMessage);
+                outputToClient.println("Received your stroke! " + clientMessage);
 
-            // Deserialize json string into a stroke object
-            System.out.println("Now deserializing client's message...");
-            Stroke myStrokeFromClient = myMain.jsonDeserializeStroke(clientMessage);
-            System.out.println("Deserialized stroke object received from client: " + myStrokeFromClient.toString());
+                // Deserialize json string into a stroke object
+                System.out.println("Now deserializing client's message...");
+                Stroke myStrokeFromClient = myMain.jsonDeserializeStroke(clientMessage);
+                System.out.println("Deserialized stroke object received from client: " + myStrokeFromClient.toString());
+            }
 
         } catch(IOException exception) {
             exception.printStackTrace();

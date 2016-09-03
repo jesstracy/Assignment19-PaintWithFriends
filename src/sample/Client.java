@@ -29,7 +29,7 @@ public class Client {
 
 
 
-    public void startClientSocket(Main myMain) {
+    public void startClientSocket() {
         try {
             clientSocket = new Socket("localhost", 8005);
             System.out.println("\tClient socket connected");
@@ -95,9 +95,6 @@ public class Client {
             System.out.println("\tNow sending testingStroke to server....");
             out.println(serializedTestingStroke);
 
-
-            //Send one to server to test
-//            out.println(serializedStrokeList.get(0));
 
             String serverResponse = in.readLine();
             System.out.println("\tServer replied: " + serverResponse);

@@ -40,6 +40,11 @@ public class Server {
 //            outputToClient.println("Received your stroke! " + myStrokeFromClient);
             outputToClient.println("Received your stroke! " + clientMessage);
 
+            // Deserialize json string into a stroke object
+            System.out.println("Now deserializing client's message...");
+            Stroke myStrokeFromClient = myMain.jsonDeserializeStroke(clientMessage);
+            System.out.println("Deserialized stroke object received from client: " + myStrokeFromClient.toString());
+
         } catch(IOException exception) {
             exception.printStackTrace();
         }

@@ -98,7 +98,7 @@ public class Main extends Application {
                 System.out.println("Now opening client socket...");
 //                myClient = new Client();
                 isClientRunning = true;
-                myClient.startClientSocket(myMain);
+                myClient.startClientSocket();
             }
         });
 

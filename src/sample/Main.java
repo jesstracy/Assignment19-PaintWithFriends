@@ -111,7 +111,7 @@ public class Main extends Application {
         gc.setStroke(Color.color(Math.random(), Math.random(), Math.random()));
         gc.setLineWidth(5);
 
-        canvas.setOnMouseMoved(new EventHandler<MouseEvent>() {
+        canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent e) {
@@ -153,6 +153,10 @@ public class Main extends Application {
                 if (e.getText().equalsIgnoreCase("D")) {
                     System.out.println("Toggle drawing!");
                     keepDrawing = !keepDrawing;
+                }
+
+                if (e.getText().equalsIgnoreCase("A")) {
+                    gc.setStroke(Color.color(Math.random(), Math.random(), Math.random()));
                 }
 
                 if (e.getCode() == KeyCode.UP) {

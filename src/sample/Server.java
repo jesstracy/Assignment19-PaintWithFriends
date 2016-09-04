@@ -10,6 +10,9 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -35,6 +38,9 @@ public class Server extends Application implements Runnable {
     GraphicsContext serverGC;
     final double DEFAULT_SCENE_WIDTH = 800;
     final double DEFAULT_SCENE_HEIGHT = 600;
+    private boolean serverTurn = false;
+    private int serverStrokeSize = 10;
+    private boolean serverKeepDrawing = true;
 
     public void run() {
         startServer();
@@ -63,19 +69,27 @@ public class Server extends Application implements Runnable {
 //            String clientMessage = inputFromClient.readLine();
             String clientMessage;
             while((clientMessage = inputFromClient.readLine()) != null) {
-                System.out.println("Stroke json string received from client: " + clientMessage);
+                // If it's the client's turn, get json stroke, deserialize, and draw it out.
+                if (!serverTurn) {
+                    System.out.println("Stroke json string received from client: " + clientMessage);
 
 
-                outputToClient.println("Received your stroke! " + clientMessage);
+                    outputToClient.println("Received your stroke! " + clientMessage);
 
-                // Deserialize json string into a stroke object
-                System.out.println("Now deserializing client's message...");
-                Stroke myStrokeFromClient = myMain.jsonDeserializeStroke(clientMessage);
-                System.out.println("Deserialized stroke object received from client: " + myStrokeFromClient.toString());
+                    // Deserialize json string into a stroke object
+                    System.out.println("Now deserializing client's message...");
+                    Stroke myStrokeFromClient = myMain.jsonDeserializeStroke(clientMessage);
+                    System.out.println("Deserialized stroke object received from client: " + myStrokeFromClient.toString());
 
-                //Make the serverGC do the stroke. In a method. And do Dom's run thing on tiyo
-                serverGC.strokeOval(myStrokeFromClient.getxCoordinate(), myStrokeFromClient.getyCoordinate(), myStrokeFromClient.getStrokeSize(), myStrokeFromClient.getStrokeSize());
+                    //Make the serverGC do the stroke. In a method. And do Dom's run thing on tiyo
+                    serverGC.strokeOval(myStrokeFromClient.getxCoordinate(), myStrokeFromClient.getyCoordinate(), myStrokeFromClient.getStrokeSize(), myStrokeFromClient.getStrokeSize());
 //                Platform.runLater(new RunnableGC(serverGC, myStrokeFromClient));
+                }
+                // if it's the server's turn, let the server draw and send strokes to client!
+                else {
+                    System.out.println("Now it is the server's turn to draw");
+                    // send server's strokes!
+                }
 
             }
 
@@ -98,7 +112,7 @@ public class Server extends Application implements Runnable {
     }
 
     public void start(Stage secondaryStage) {
-        secondaryStage.setTitle("Second Stage");
+        secondaryStage.setTitle("Server Stage");
 
         // we're using a grid layout
         GridPane grid = new GridPane();
@@ -114,7 +128,7 @@ public class Server extends Application implements Runnable {
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         grid.add(sceneTitle, 0, 0);
 
-        Button button = new Button("Sample paint button");
+        Button button = new Button("My turn to draw!");
         HBox hbButton = new HBox(10);
         hbButton.setAlignment(Pos.TOP_LEFT);
         hbButton.getChildren().add(button);
@@ -123,7 +137,8 @@ public class Server extends Application implements Runnable {
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                System.out.println("I can switch to another scene here ...");
+                System.out.println("Setting server's turn to true...");
+                serverTurn = true;
             }
         });
 
@@ -145,6 +160,53 @@ public class Server extends Application implements Runnable {
         serverGC.setStroke(Color.color(Math.random(), Math.random(), Math.random()));
         serverGC.setLineWidth(5);
 
+        canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (serverTurn && serverKeepDrawing) {
+                    serverGC.strokeOval(event.getX(), event.getY(), serverStrokeSize, serverStrokeSize);
+
+                    //set stroke object in order and send it to the client.
+                }
+            }
+        });
+
+        grid.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent e) {
+                System.out.println(e.getCode());
+                System.out.println(e.getText());
+
+                if (e.getText().equalsIgnoreCase("D")) {
+                    System.out.println("Toggle drawing!");
+                    serverKeepDrawing = !serverKeepDrawing;
+                }
+
+                if (e.getText().equalsIgnoreCase("A")) {
+                    serverGC.setStroke(Color.color(Math.random(), Math.random(), Math.random()));
+                }
+
+                if (e.getCode() == KeyCode.UP) {
+                    serverStrokeSize++;
+                    int maxStrokeSize = 60;
+                    if (serverStrokeSize > maxStrokeSize) {
+                        System.out.println("sample.Stroke size can't increase past " + maxStrokeSize + "!");
+                        serverStrokeSize = maxStrokeSize;
+                    }
+                }
+
+                if (e.getCode() == KeyCode.DOWN) {
+                    serverStrokeSize--;
+                    if (serverStrokeSize < 1) {
+                        System.out.println("sample.Stroke size must be at least 1!");
+                        serverStrokeSize = 1;
+                    }
+                }
+            }
+        });
+
+
 
 
         grid.add(canvas, 0 ,2);
@@ -154,7 +216,7 @@ public class Server extends Application implements Runnable {
 
 
         secondaryStage.setScene(defaultScene);
-        System.out.println("About to show the second stage");
+        System.out.println("About to show the server stage");
 
         secondaryStage.show();
 

@@ -30,8 +30,8 @@ public class Client {
 
     public void startClientSocket() {
         try {
-//            clientSocket = new Socket("localhost", 8005);
-            clientSocket = new Socket("192.168.1.207", 8005);
+            clientSocket = new Socket("localhost", 8005);        /* me */
+//            clientSocket = new Socket("192.168.1.207", 8005);  /* benjamin lee */
             System.out.println("\tClient socket connected");
 
             out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -120,6 +120,9 @@ public class Client {
         strokeList.add(myStroke);
     }
 }
+
+
+
 
 
 

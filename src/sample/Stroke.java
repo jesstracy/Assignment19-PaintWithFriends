@@ -10,7 +10,7 @@ public class Stroke {
     private double xCoordinate;
     private double yCoordinate;
     private int strokeSize;
-    private Instant strokeTime;
+//    private Instant strokeTime;
 
     public Stroke() {
 
@@ -22,12 +22,12 @@ public class Stroke {
         this.strokeSize = strokeSize;
     }
 
-    public Stroke(double xCoordinate, double yCoordinate, int strokeSize, Instant strokeTime) {
-        this.xCoordinate = xCoordinate;
-        this.yCoordinate = yCoordinate;
-        this.strokeSize = strokeSize;
-        this.strokeTime = strokeTime;
-    }
+//    public Stroke(double xCoordinate, double yCoordinate, int strokeSize, Instant strokeTime) {
+//        this.xCoordinate = xCoordinate;
+//        this.yCoordinate = yCoordinate;
+//        this.strokeSize = strokeSize;
+//        this.strokeTime = strokeTime;
+//    }
 
     @Override
     public String toString() {
@@ -62,11 +62,11 @@ public class Stroke {
         this.strokeSize = strokeSize;
     }
 
-    public Instant getStrokeTime() {
-        return strokeTime;
-    }
-
-    public void setStrokeTime(Instant strokeTime) {
-        this.strokeTime = strokeTime;
-    }
+//    public Instant getStrokeTime() {
+//        return strokeTime;
+//    }
+//
+//    public void setStrokeTime(Instant strokeTime) {
+//        this.strokeTime = strokeTime;
+//    }
 }

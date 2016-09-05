@@ -92,7 +92,7 @@ public class Server extends Application implements Runnable {
     }
 
     public void start(Stage secondaryStage) {
-        secondaryStage.setTitle("Second Stage");
+        secondaryStage.setTitle("Server Stage");
 
         // we're using a grid layout
         GridPane grid = new GridPane();

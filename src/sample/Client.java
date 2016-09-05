@@ -16,6 +16,7 @@ public class Client {
     PrintWriter out;
     BufferedReader in;
 //    private Instant timeOfFirstStroke;
+    private String ipAddress;
 
     //For testing
     private Stroke clientStroke;
@@ -28,8 +29,9 @@ public class Client {
 
     public void startClientSocket() {
         try {
-            clientSocket = new Socket("localhost", 8005);        /* me */
+//            clientSocket = new Socket("localhost", 8005);        /* me */
 //            clientSocket = new Socket("192.168.1.207", 8005);  /* Ben */
+            clientSocket = new Socket(ipAddress, 8005);
             System.out.println("\tClient socket connected");
 
             out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -39,6 +41,10 @@ public class Client {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    public String getIPAddress() {
+        return "";
     }
 
     public void sendStrokesToServer(Main myMain) {
@@ -89,4 +95,13 @@ public class Client {
 //    public void setTimeOfFirstStroke(Instant timeOfFirstStroke) {
 //        this.timeOfFirstStroke = timeOfFirstStroke;
 //    }
+
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
 }

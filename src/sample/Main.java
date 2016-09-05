@@ -1,6 +1,8 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -12,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -93,18 +96,18 @@ public class Main extends Application {
             }
         });
 
-        Button openClientSocketButton = new Button("Show your strokes to a friend!");
-        hbButton.getChildren().add(openClientSocketButton);
-
-        openClientSocketButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Now opening client socket...");
-//                myClient = new Client();
-                isClientRunning = true;
-                myClient.startClientSocket();
-            }
-        });
+//        Button openClientSocketButton = new Button("Show your strokes to a friend!");
+//        hbButton.getChildren().add(openClientSocketButton);
+//
+//        openClientSocketButton.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                System.out.println("Now opening client socket...");
+////                myClient = new Client();
+//                isClientRunning = true;
+//                myClient.startClientSocket();
+//            }
+//        });
 
         Button replayDrawingButton = new Button("Replay my drawing!");
         hbButton.getChildren().add(replayDrawingButton);
@@ -139,6 +142,47 @@ public class Main extends Application {
             }
         });
 
+        Text comboBoxHeading = new Text("Show your drawing to: ");
+        hbButton.getChildren().add(comboBoxHeading);
+
+        ObservableList<String> ipOptions = FXCollections.observableArrayList("localhost", "Ben");
+        ComboBox ipComboBox = new ComboBox(ipOptions);
+        hbButton.getChildren().add(ipComboBox);
+
+        ipComboBox.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+//                myClient.setIpAddress("");
+            }
+        });
+
+        Button connectButton = new Button("Connect!");
+        hbButton.getChildren().add(connectButton);
+
+        connectButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Now opening client socket...");
+                isClientRunning = true;
+                String ipAddress = null;
+                if (ipComboBox.getValue().toString().equals("localhost")) {
+                    ipAddress = "localhost";
+                }
+                if (ipComboBox.getValue().toString().equals("Ben")) {
+                    ipAddress = "192.168.1.207";
+                }
+                if (ipAddress != null) {
+                    myClient.setIpAddress(ipAddress);
+                    myClient.startClientSocket();
+                    hbButton.getChildren().remove(connectButton);
+                } else {
+                    System.out.println("You must select a friend in order to connect!");
+                }
+            }
+        });
+
+
+
         // add canvas
         Canvas canvas = new Canvas(DEFAULT_SCENE_WIDTH, DEFAULT_SCENE_HEIGHT-100);
 
@@ -154,13 +198,13 @@ public class Main extends Application {
             public void handle(MouseEvent e) {
 //                System.out.println("x: " + e.getX() + ", y: " + e.getY());
                 if (keepDrawing) {
-                    if (myClient.getStrokeList().isEmpty()) {
+//                    if (myClient.getStrokeList().isEmpty()) {
 //                        myClient.setTimeOfFirstStroke(Instant.now());
 //                        System.out.println("First stroke: time set - " + myClient.getTimeOfFirstStroke());
-                    }
+//                    }
                     gc.strokeOval(e.getX(), e.getY(), strokeSize, strokeSize);
                     // save stroke to client's arrayList for replay button
-                    Stroke saveStroke = new Stroke(e.getX(), e.getY(), strokeSize, Instant.now());
+                    Stroke saveStroke = new Stroke(e.getX(), e.getY(), strokeSize);
                     myClient.addStrokeToArrayList(saveStroke);
 
                     // To avoid error messages before second screen is open

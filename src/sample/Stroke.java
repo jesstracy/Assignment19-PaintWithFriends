@@ -1,5 +1,8 @@
 package sample;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+
 /**
  * Created by jessicatracy on 9/1/16.
  */
@@ -7,6 +10,7 @@ public class Stroke {
     private double xCoordinate;
     private double yCoordinate;
     private int strokeSize;
+    private Instant strokeTime;
 
     public Stroke() {
 
@@ -16,6 +20,13 @@ public class Stroke {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
         this.strokeSize = strokeSize;
+    }
+
+    public Stroke(double xCoordinate, double yCoordinate, int strokeSize, Instant strokeTime) {
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
+        this.strokeSize = strokeSize;
+        this.strokeTime = strokeTime;
     }
 
     @Override
@@ -49,5 +60,13 @@ public class Stroke {
 
     public void setStrokeSize(int strokeSize) {
         this.strokeSize = strokeSize;
+    }
+
+    public Instant getStrokeTime() {
+        return strokeTime;
+    }
+
+    public void setStrokeTime(Instant strokeTime) {
+        this.strokeTime = strokeTime;
     }
 }

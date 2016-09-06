@@ -37,6 +37,7 @@ public class Main extends Application {
     final double DEFAULT_SCENE_WIDTH = 800;
     final double DEFAULT_SCENE_HEIGHT = 600;
     boolean keepDrawing = true;
+    static boolean myTurn = true;
     boolean isClientRunning = false;
     int strokeSize = 10;
 //    Stroke myStroke;
@@ -44,6 +45,7 @@ public class Main extends Application {
     GraphicsContext gc;
     GraphicsContext secondGC;
     Client myClient = new Client();
+    Server myServer;
 
     long drawDelay = 0;
     long delayIncrements = 20;
@@ -197,7 +199,7 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent e) {
 //                System.out.println("x: " + e.getX() + ", y: " + e.getY());
-                if (keepDrawing) {
+                if (keepDrawing && myTurn) {
 //                    if (myClient.getStrokeList().isEmpty()) {
 //                        myClient.setTimeOfFirstStroke(Instant.now());
 //                        System.out.println("First stroke: time set - " + myClient.getTimeOfFirstStroke());
@@ -214,11 +216,8 @@ public class Main extends Application {
                     }
                     // only add stroke to client's strokeList if the client is running!
                     if (isClientRunning) {
-                        // for testing
-                        System.out.println("In main - creating testing stroke");
                         Stroke clientStrokeMain = new Stroke(e.getX(), e.getY(), strokeSize);
                         System.out.println("Stroke I'm about to set to client: " + clientStrokeMain);
-                        System.out.println("Setting to client.");
                         myClient.setClientStroke(clientStrokeMain);
 
 //                        System.out.println("Now adding strokes to arraylist in client...");
@@ -490,6 +489,13 @@ public class Main extends Application {
         return drawDelay;
     }
 
+    public static boolean isMyTurn() {
+        return myTurn;
+    }
+
+    public static void setMyTurn(boolean myTurn) {
+        Main.myTurn = myTurn;
+    }
 
     public static void main(String[] args) {
         launch(args);
